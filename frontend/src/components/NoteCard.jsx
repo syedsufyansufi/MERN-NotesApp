@@ -1,8 +1,9 @@
 import toast from "react-hot-toast"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import api from "../lib/axios"
 const NoteCard = ({ note, setNotes }) => {
 
+    const navigate = useNavigate()
     const handleDelete = async (e, id) => {
         e.preventDefault()
         if (!window.confirm("Are Sure You Want To Delete This Note?")) return
@@ -20,7 +21,7 @@ const NoteCard = ({ note, setNotes }) => {
 
     const handleCreateButton = (e) => {
         e.preventDefault()
-        alert("Edit functionality coming soon!");
+        navigate(`/note/${note._id}`)
     }
 
     return (
