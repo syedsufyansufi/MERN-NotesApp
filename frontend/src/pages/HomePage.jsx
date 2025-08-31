@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import NoteCard from '../components/NoteCard';
 import RateLimitedUi from '../components/RateLimitedUi';
 import api from '../lib/axios';
+import NoNotes from './NoNotes';
 
 const HomePage = () => {
   const [isRateLimited, setRateLimited] = useState(false);
@@ -36,6 +37,7 @@ const HomePage = () => {
   }, []);
 
   return (
+
     <div className='min-h-screen bg-base-200'>
       <Navbar />
       {isRateLimited && <RateLimitedUi />}
@@ -43,13 +45,14 @@ const HomePage = () => {
         {loading && <div className='text-center text-primary py-10'>Loading Notes...</div>}
         {notes.length > 0 && !isRateLimited && (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-            {notes.map((note, index) => (
-              <NoteCard key={index} note={note} />
+            {notes.map((note) => (
+              <NoteCard key={note._id} note={note} setNotes={setNotes} />
             ))}
+
           </div>
         )}
         {notes.length === 0 && !loading && !isRateLimited && (
-          <div className='text-center text-gray-500 py-10'>No notes found</div>
+          <NoNotes />
         )}
       </div>
     </div>

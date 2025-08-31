@@ -58,8 +58,8 @@ const CreatePage = () => {
                     <span className='label-text'>Title</span>
                   </label>
                   <div>
-                    <input type='text' placeholder='Note Title' className='input input-bordered' value={title} onChange={(e) => setTitle(e.target.value)} />
-                  </div>
+                    <input type='text' placeholder='Note Title ' className='input input-bordered w-full mt-1.5' value={title} onChange={(e) => setTitle(e.target.value)} />
+                  </div>  
                 </div>
                 <div className='form-control mb-4'>
                   <label className="label">
@@ -67,7 +67,7 @@ const CreatePage = () => {
                   </label>
                   <div>
                     <textarea placeholder='Write your note here...'
-                      className='textarea textarea-bordered h-32'
+                      className='textarea textarea-bordered h-32 w-full mt-1.5'
                       value={content}
                       onChange={(e) => setContent(e.target.value)} />
                   </div>

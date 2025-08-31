@@ -10,7 +10,7 @@ const Navbar = () => {
                 <div className='mx-auto max-w-6xl p-4'>
                     <div className='flex item-center justify-between'>
                         <h1 className='text-3xl font-bold text-primary font-mono tracking-tight '>
-                            ThinkBoard
+                            <Link to={'/'}>ThinkBoard</Link>
                         </h1>
                         <Link to='/create' className='btn btn-primary'>
                             Create Note
