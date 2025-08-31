@@ -1,25 +1,20 @@
 {
-  "devDependencies": {
-    "prettier": "^3.6.2"
-  },
-  "name": "mern-notesapp",
+  "name": "mern-notes-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "MERN stack notes application",
+  "main": "backend/src/server.js",
   "scripts": {
     "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
-    "start":"npm run start --prefix backend"
+    "start": "node backend/src/server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run dev"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/syedsufyansufi/MERN-NotesApp.git"
+  "engines": {
+    "node": ">=16.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/syedsufyansufi/MERN-NotesApp/issues"
-  },
-  "homepage": "https://github.com/syedsufyansufi/MERN-NotesApp#readme"
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
 }

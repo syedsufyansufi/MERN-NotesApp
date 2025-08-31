@@ -19,7 +19,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173", 
     "http://localhost:5174", 
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://your-app-name.onrender.com" 
   ],
   credentials: true
 }));
@@ -33,6 +34,18 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/notes", notesRoutes);
+
+const __dirname = path.resolve();
+
+if(process.env.NODE_ENV === "production"){
+  // Serve static files from the React app build directory
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+  
+  // Catch all handler: send back React's index.html file for any non-api routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });  
+}
 
 if(process.env.NODE_ENV==="production"){
   app.use(express.static(path.join(__dirname,"../frontend/dist")))
