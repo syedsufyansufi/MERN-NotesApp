@@ -50,10 +50,11 @@ app.use((req, res, next) => {
 app.use("/api/notes", notesRoutes);
 
 // ✅ Serve frontend build (if using single Render service)
+// Serve frontend build (Express 5 syntax)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(join(__dirname, "../frontend/dist")));
-
-  app.get("/*", (req, res) => {
+  // Catch-all for client-side routing (includes "/")
+  app.get("/{*splat}", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
   });
 }
