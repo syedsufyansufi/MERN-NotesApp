@@ -1,61 +1,65 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import path from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 import notesRoutes from "./routes/notesRoutes.js";
 
-// Load environment variables from .env file
 dotenv.config();
+
 const app = express();
+const PORT = process.env.PORT || 3001;
 
-const __dirname = path.resolve()
-// Connect to the database
-connectDB();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Middleware to parse JSON bodies
-app.use(cors({
-  origin: [
-    "http://localhost:5173", 
-    "http://localhost:5174", 
-    "http://localhost:3000",
-    "https://your-app-name.onrender.com" 
-  ],
-  credentials: true
-}));
-    
-app.use(express.json());      
+// ✅ CORS: dynamic for dev, strict for production
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow Postman/CLI
+      if (process.env.NODE_ENV === "development") {
+        if (origin.startsWith("http://localhost")) {
+          return callback(null, true);
+        }
+      }
+      if (process.env.NODE_ENV === "production") {
+        if (origin === process.env.FRONTEND_URL) {
+          return callback(null, true);
+        }
+      }
+      return callback(new Error(`CORS blocked: ${origin}`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  })
+);
+
+app.use(express.json());
 app.use(rateLimiter);
 
+// Debug log
 app.use((req, res, next) => {
-  console.log(`request method is ${req.method} & request url is ${req.url}`);
+  console.log(`request method: ${req.method} | url: ${req.url}`);
   next();
 });
 
+// Routes
 app.use("/api/notes", notesRoutes);
 
-const __dirname = path.resolve();
-
-if(process.env.NODE_ENV === "production"){
-  // Serve static files from the React app build directory
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  
-  // Catch all handler: send back React's index.html file for any non-api routes
+// ✅ Serve frontend build (if using single Render service)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-  });  
+    res.sendFile(join(__dirname, "../frontend", "dist", "index.html"));
+  });
 }
 
-if(process.env.NODE_ENV==="production"){
-  app.use(express.static(path.join(__dirname,"../frontend/dist")))
-app.get("/*",(req,res)=>{
-  res.sendFile(path.join(__dirname,"../frontend","dist","index.html"
-  ))
-})  
-}
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
 });

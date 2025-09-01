@@ -1,7 +1,7 @@
 import Note from "../models/Note.js";
 
 // Get all notes
-export async function getAllNotes(_, res) {
+export async function getAllNotes(req, res) {
   try {
     const notes = await Note.find().sort({ createdAt: -1 });
     res.status(200).json(notes);
@@ -64,7 +64,12 @@ export async function updateNote(req, res) {
 
 // Delete note
 export async function deleteNote(req, res) {
-  const { id } = req.params;
-  await Note.findByIdAndDelete(id);
-  res.status(200).json({ message: "Note Deleted successfully" });
+  try {
+    const { id } = req.params;
+    await Note.findByIdAndDelete(id);
+    res.status(200).json({ message: "Note Deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
 }

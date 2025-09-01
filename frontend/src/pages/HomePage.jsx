@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import NoteCard from '../components/NoteCard';
 import RateLimitedUi from '../components/RateLimitedUi';
-import api from '../lib/axios';
+import api from '../lib/axios.js';
 import NoNotes from './NoNotes';
 
 const HomePage = () => {
@@ -15,7 +15,7 @@ const HomePage = () => {
     const fetchNotes = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/notes');
+        const response = await api.get('/api/notes');
         const data = response.data;
 
         setNotes(data);
