@@ -10,11 +10,6 @@ lerna-debug.log*
 # Dependency directories
 node_modules/
 
-# Build output
-dist/
-dist-ssr/
-build/
-
 # Environment files
 .env
 *.local
@@ -45,7 +40,3 @@ coverage/
 
 # Dependencies
 node_modules/
-
-# Build outputs
-dist/
-build/
