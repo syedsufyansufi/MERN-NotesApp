@@ -59,6 +59,9 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(join(frontendPath, "index.html"));
   });
 }
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", time: new Date().toISOString() });
+});
 
 connectDB().then(() => {
   app.listen(PORT, () => {
