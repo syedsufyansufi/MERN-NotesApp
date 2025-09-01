@@ -1,11 +1,12 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import path, { dirname, join } from "path";
+import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 import notesRoutes from "./routes/notesRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -46,16 +47,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// API Routes
 app.use("/api/notes", notesRoutes);
 
-// ✅ Serve frontend build (if using single Render service)
-// Serve frontend build (Express 5 syntax)
+// ✅ Serve frontend build (only in production on Render)
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(join(__dirname, "../frontend/dist")));
-  // Catch-all for client-side routing (includes "/")
-  app.get("/{*splat}", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
+  const frontendPath = path.resolve(__dirname, "../../frontend/dist");
+  app.use(express.static(frontendPath));
+
+  // Catch-all for client-side routing
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
   });
 }
 
