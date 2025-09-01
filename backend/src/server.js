@@ -26,7 +26,9 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // allow Postman/CLI
-      if (allowedOrigins.some((allowed) => origin.startsWith(allowed))) {
+      if (
+        allowedOrigins.some((allowed) => allowed && origin.startsWith(allowed))
+      ) {
         return callback(null, true);
       }
       return callback(new Error(`CORS blocked: ${origin}`));
