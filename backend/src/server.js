@@ -1,12 +1,11 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import { dirname, join } from "path";
+import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
 import notesRoutes from "./routes/notesRoutes.js";
-
 dotenv.config();
 
 const app = express();
@@ -53,8 +52,9 @@ app.use("/api/notes", notesRoutes);
 // ✅ Serve frontend build (if using single Render service)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(join(__dirname, "../frontend/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(join(__dirname, "../frontend", "dist", "index.html"));
+
+  app.get("/*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
   });
 }
 
