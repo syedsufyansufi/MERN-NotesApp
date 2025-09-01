@@ -17,7 +17,7 @@ const NoteDetailPage = () => {
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const res = await api.get(`/notes/${id}`)
+                const res = await api.get(`/api/notes/${id}`)
                 setNote(res.data)
             } catch (error) {
                 toast.error("Failed to fatch note")
@@ -32,7 +32,7 @@ const NoteDetailPage = () => {
     const handleDelete = async () => {
         if (!window.confirm("Are You Sure You Want To Delete This Note?")) return;
         try {
-            await api.delete(`/notes/${id}`)
+            await api.delete(`/api/notes/${id}`)
             toast.success("Note deleted")
             navigate('/')
         }
@@ -48,7 +48,7 @@ const NoteDetailPage = () => {
         }
         setSaving(true)
         try {
-            await api.put(`/notes/${id}`, note)
+            await api.put(`/api/notes/${id}`, note)
             toast.success("Note Updated!")
             navigate('/')
 
