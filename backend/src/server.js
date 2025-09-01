@@ -1,7 +1,7 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
-import path, { dirname, join } from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
@@ -19,16 +19,14 @@ const __dirname = dirname(__filename);
 const allowedOrigins = [
   "http://localhost:5173", // Vite default
   "http://localhost:3000", // CRA default
-  process.env.FRONTEND_URL, // Render frontend (if deployed separately)
+  process.env.FRONTEND_URL, // Your deployed frontend
 ].filter(Boolean); // remove undefined
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true); // allow Postman/CLI
-      if (
-        allowedOrigins.some((allowed) => allowed && origin.startsWith(allowed))
-      ) {
+      if (allowedOrigins.some((allowed) => origin?.startsWith(allowed))) {
         return callback(null, true);
       }
       return callback(new Error(`CORS blocked: ${origin}`));
@@ -48,19 +46,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// API Routes
+// ✅ API Routes only
 app.use("/api/notes", notesRoutes);
 
-// ✅ Serve frontend build (if same service on Render)
-if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.resolve(__dirname, "../../frontend/dist");
-  app.use(express.static(frontendPath));
-
-  // Catch-all for React Router / SPA
-  app.get("*", (req, res) => {
-    res.sendFile(join(frontendPath, "index.html"));
-  });
-}
+// ✅ Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", time: new Date().toISOString() });
 });
